@@ -4,28 +4,42 @@
     <head>
         <meta charset="UTF-8"/>
         <title>Demo: quiz.js</title>
+        <link type="text/css" rel="stylesheet" href="demo.css"/>
     </head>
     <body>
         <p>How much is 2+2?</p>
-        <ul class="quiz-question" id="q1" data-mode="single">
-            <li>1</li>
-            <li>2</li>
-            <li>3</li>
-            <li class="quiz-answer">4</li>
-            <input type="submit" value="Send"/>
-            <input type="reset" value="Clear"/>
-        </ul>
+        <div class="quiz">
+            <ul class="quiz-question" id="q1">
+                <li class="quiz-option">1</li>
+                <li class="quiz-option">2</li>
+                <li class="quiz-option">3</li>
+                <li class="quiz-answer">4</li>
+                <button class="quiz-submit">Submit</button>
+                <button class="quiz-clear">Clear</button>
+            </ul>
         
-        <p>Which are the roots of the equation x²+x-6 = 0?</p>
-        <ul class="quiz-question" id="q2" data-mode="multiple">
-            <li class="quiz-answer">-3</li>
-            <li>-2</li>
-            <li>0</li>
-            <li class="quiz-answer">2</li>
-            <li>3</li>
-            <input type="submit" value="Submit"/>
-            <input type="reset" value="Reset"/>
-        </ul>
+            <p>Which are the roots of the equation x²+x-6 = 0?</p>
+            <ul class="quiz-question quiz-multiple" id="q2">
+                <li class="quiz-answer">-3</li>
+                <li class="quiz-option">-2</li>
+                <li class="quiz-option">0</li>
+                <li class="quiz-answer">2</li>
+                <li class="quiz-option">3</li>
+                <button class="quiz-submit">Submit</button>
+                <button class="quiz-clear">Clear</button>
+            </ul>
+            
+            <p>Which of these lines are paralell to f(x) = 2x + 3?</p>
+            <ul class="quiz-question quiz-multiple" id="q3">
+                <li class="quiz-option">2x -3y = 0</li>
+                <li class="quiz-answer">-4x + 2y = 5</li>
+                <li class="quiz-option">5x - 10y = 20</li>
+                <li class="quiz-answer">x/2 - y/4 = 1</li>
+                <li class="quiz-option">7/x = 3.5/y</li>
+                <button class="quiz-submit">Submit</button>
+                <button class="quiz-clear">Clear</button>
+            </ul>
+        </div>
         
         <script type="text/javascript" src="jquery.js"></script>
         <script type="text/javascript" src="quiz.js"></script>
