@@ -1,4 +1,4 @@
-quiz.js
-=======
+jquery.quiz.js
+==============
 
-A javascript engine for creating simple quizzes in html pages.
+A jQuery plugin that generates interactive quizzes from lists and so on.
