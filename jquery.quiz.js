@@ -41,6 +41,27 @@ QuizSingleHandler.prototype = {
         }                
     },
     
+    showAnswer: function(self) {
+        self = (self == undefined) ? this : self;
+        
+        $('.quiz-answer', self.question).each(function() {
+            $(this).addClass('quiz-correct');
+        });
+        
+        self.question.data('submitted', true);
+    },
+    
+    toggleHint: function(self) {
+        self = (self == undefined) ? this : self;
+        
+        $('.quiz-hint', self.question).each(function() {
+            if ( $(this).css('display') == 'none' )
+                $(this).css('display', 'block');
+            else
+                $(this).css('display', 'none');
+        });
+    },
+    
     init: function() {   
         var self = this;
         
@@ -72,12 +93,21 @@ QuizSingleHandler.prototype = {
             $(this).bind('click.clearCorrection', function() { self.clearCorrection(self) });
         });
 
-        
         // bind makeCorrection to the quiz-submit elements, if any
         $('.quiz-submit', self.question).each(function() {
             $(this).bind('click.makeCorrection', function() { self.makeCorrection(self) });
         });
+        
+        // bind makeCorrection to the quiz-submit elements, if any
+        $('.quiz-show-answer', self.question).each(function() {
+            $(this).bind('click.showAnswer', function() { self.showAnswer(self) });
+        });
+        
+        $('.quiz-toggle-hint', self.question).each(function() {
+            $(this).bind('click.toggleHint', function() { self.toggleHint(self) });
+        });
 
+        self.toggleHint();
     }
 }
 
@@ -93,7 +123,6 @@ QuizMultipleHandler.prototype = {
         self.question.data('submitted', true);
         
         var isCorrect = true;
-        
 
         $('.quiz-checkbox', self.question).each(function() {
             var $checkbox = $(this);
@@ -129,8 +158,28 @@ QuizMultipleHandler.prototype = {
             self.question.data('submitted', false);
         }                
     },
+      
+    showAnswer: function(self) {
+        self = (self == undefined) ? this : self;
+        
+        $('.quiz-answer', self.question).each(function() {
+            $(this).addClass('quiz-correct');
+        });
+        
+        self.question.data('submitted', true);
+    },
     
-
+    toggleHint: function(self) {
+        self = (self == undefined) ? this : self;
+        
+        $('.quiz-hint', self.question).each(function() {
+            if ( $(this).css('display') == 'none' )
+                $(this).css('display', 'block');
+            else
+                $(this).css('display', 'none');
+        });
+    },
+      
     init: function() {   
         var self = this;
         
@@ -161,6 +210,45 @@ QuizMultipleHandler.prototype = {
         $('.quiz-submit', self.question).each(function() {
             $(this).bind('click.makeCorrection', function() { self.makeCorrection(self) });
         });
+        
+        $('.quiz-show-answer', self.question).each(function() {
+            $(this).bind('click.showAnswer', function() { self.showAnswer(self) });
+        });
+        
+        $('.quiz-toggle-hint', self.question).each(function() {
+            $(this).bind('click.toggleHint', function() { self.toggleHint(self) });
+        });
+
+        self.toggleHint();
+    }
+}
+
+QuizObjectiveHandler = function(question, idQuestion) { 
+    this.question = question;
+    this.idQuestion = idQuestion;
+}
+
+QuizObjectiveHandler.prototype = {
+    
+    toggleHint: function(self) {
+        self = (self == undefined) ? this : self;
+        
+        $('.quiz-hint', self.question).each(function() {
+            if ( $(this).css('display') == 'none' )
+                $(this).css('display', 'block');
+            else
+                $(this).css('display', 'none');
+        });
+    },
+    
+    init: function() {
+        var self = this;
+        
+        $('.quiz-toggle-hint', self.question).each(function() {
+            $(this).bind('click.toggleHint', function() { self.toggleHint(self) });
+        });
+
+        self.toggleHint();
     }
 }
 
@@ -205,8 +293,8 @@ $.quiz.getHandler = function($context) {
 
 $.quiz.handlers = {
     'quiz-single': QuizSingleHandler,
-    'quiz-multiple': QuizMultipleHandler
-    // 'quiz-objective': QuizObjectiveHandler
+    'quiz-multiple': QuizMultipleHandler,
+    'quiz-objective': QuizObjectiveHandler
 };
 
 $.quiz.quizzes = [];

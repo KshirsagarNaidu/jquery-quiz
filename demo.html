@@ -3,12 +3,24 @@
 <html>
     <head>
         <meta charset="UTF-8"/>
-        <title>Demo: quiz.js</title>
+        <title>jQuery Quiz plugin demo</title>
         <link type="text/css" rel="stylesheet" href="demo.css"/>
     </head>
     <body>
-        <p>How much is 2+2?</p>
-        <div class="quiz">
+    
+        <div id="content">
+        
+        <p>Welcome to the <b>jQuery Quiz Plugin</b> demo! This is
+        a very, very easy to use plugin and requires little knowledge of 
+        javascript to apply. In fact, all javascript you'll need most
+        of the time is only a one-line code that you can simply copy-and-paste:</p>
+        
+        <code class="javascript">
+$.quiz();      
+        </code>
+        
+        <p>How much is 2+2?</p>      
+        
             <ul class="quiz-single">
                 <li class="quiz-option">1</li>
                 <li class="quiz-option">2</li>
@@ -16,9 +28,13 @@
                 <li class="quiz-answer">4</li>
                 <button class="quiz-submit">Submit</button>
                 <button class="quiz-clear">Clear</button>
+                <button class="quiz-show-answer">Show Answer</button>
+                <button class="quiz-toggle-hint">Want a hint?</button>
+                <div class="quiz-hint">The correct answers have -b/a = 2</div>
             </ul>
-        
-            <p>Which are the roots of the equation x²+x-6 = 0?</p>
+            
+        <div class="quiz">
+            <p>Which of these are roots of the equation x²+x-6 = 0?</p>
             <ul class="quiz-multiple" id="q2">
                 <li class="quiz-answer">-3</li>
                 <li class="quiz-option">-2</li>
@@ -27,6 +43,7 @@
                 <li class="quiz-option">3</li>
                 <button class="quiz-submit">Submit</button>
                 <button class="quiz-clear">Clear</button>
+                <button class="quiz-show-answer">Show me the answers!</button>
             </ul>
             
             <p>Which of these lines are paralell to f(x) = 2x + 3?</p>
@@ -38,11 +55,25 @@
                 <li class="quiz-option">7/x = 3.5/y</li>
                 <button class="quiz-submit">Submit</button>
                 <button class="quiz-clear">Clear</button>
+                <button class="quiz-toggle-hint">Want a hint?</button>
+                <div class="quiz-hint">The correct answers have -b/a = 2</div>
             </ul>
+            
+            <div class="quiz-objective quiz-sensitive" data-answer="2x">
+                Quanto é x + x?
+                <div class="quiz-answer-box"></div>
+                <button class="quiz-submit">Submit</button>
+                <button class="quiz-clear">Clear</button>
+                 <button class="quiz-show-answer">Show me the answers!</button>
+                <button class="quiz-toggle-hint">Want a hint?</button>
+                <div class="quiz-hint">The correct answers have -b/a = 2</div>
+            </div>
+        </div>
         </div>
         
         <script type="text/javascript" src="jquery.js"></script>
-        <script type="text/javascript" src="mustache.js"></script>
+        <script type="text/javascript" src="mustache.min.js"></script>
+        <script type="text/javascript" src="highlight.min.js"></script>
         <script type="text/javascript" src="jquery.quiz.js"></script>
         <script type="text/javascript">
             $.quiz();
