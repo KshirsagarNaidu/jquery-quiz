@@ -1,10 +1,10 @@
 
-.quiz-question .quiz-option.quiz-correct {
+.quiz .quiz-correct {
     background-color: green;
     color: white;
 }
 
-.quiz-question .quiz-option.quiz-wrong {
+.quiz .quiz-wrong {
     background-color: red;
     color: white;
 }

@@ -9,7 +9,7 @@
     <body>
         <p>How much is 2+2?</p>
         <div class="quiz">
-            <ul class="quiz-question" id="q1">
+            <ul class="quiz-single" id="q1">
                 <li class="quiz-option">1</li>
                 <li class="quiz-option">2</li>
                 <li class="quiz-option">3</li>
@@ -19,7 +19,7 @@
             </ul>
         
             <p>Which are the roots of the equation x²+x-6 = 0?</p>
-            <ul class="quiz-question quiz-multiple" id="q2">
+            <ul class="quiz-multiple" id="q2">
                 <li class="quiz-answer">-3</li>
                 <li class="quiz-option">-2</li>
                 <li class="quiz-option">0</li>
@@ -30,7 +30,7 @@
             </ul>
             
             <p>Which of these lines are paralell to f(x) = 2x + 3?</p>
-            <ul class="quiz-question quiz-multiple" id="q3">
+            <ul class="quiz-multiple" id="q3">
                 <li class="quiz-option">2x -3y = 0</li>
                 <li class="quiz-answer">-4x + 2y = 5</li>
                 <li class="quiz-option">5x - 10y = 20</li>
@@ -42,6 +42,10 @@
         </div>
         
         <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="mustache.js"></script>
         <script type="text/javascript" src="quiz.js"></script>
+        <script type="text/javascript">
+            QuizJs.init();
+        </script>
     </body>
 </html>

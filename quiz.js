@@ -1,86 +1,179 @@
 
-$(document).ready(function() {
-    var makeCorrection = function($question) {
-        $question.data('submitted', true);
+QuizSingleHandler = function (question, numQuestion) {
+    this.question = question;
+    this.numQuestion = numQuestion;
+}
+
+QuizSingleHandler.prototype = {
+
+    makeCorrection: function(self) {
+        // when used as a callback, self will be passed as parameter,
+        // since 'this' will be overridden by jquery
+        self = (self == undefined) ? this : self;
+        self.question.data('submitted', true);
         
-        var correct = [], wrong = [];
-        
-        $('.quiz-checkbox, .quiz-radio', $question).each(function() {
-            var $this = $(this);
-            var $parent = $this.parent();
+        $('.quiz-radio:checked', self.question).each(function() {
+            var $radio = $(this);
+            var $option = $radio.parent();
             
-            if ( $parent.hasClass('quiz-answer') && $this.attr('checked') != undefined )
-                // $parent.addClass('quiz-correct');
-                correct.push($parent);
-            else if ( $this.attr('checked') != undefined )
-                // $parent.addClass('quiz-wrong');
-                wrong.push($parent);
+            if ( $option.hasClass('quiz-answer') )
+                $option.addClass('quiz-correct');
+
+            else
+                $option.addClass('quiz-wrong');
         });
-        
-        if ( wrong.length == 0 ) {
-            $.each(correct, function(index, value) {
-                $(this).addClass('quiz-correct');
-            });
-        } else {
-            $('.quiz-checkbox, .quiz-radio', $question).each(function() {
-                if ( $(this).is(':checked') )
-                    $(this).parent().addClass('quiz-wrong');
-            });
-        }
-    }
+    },
     
-    var clearOptions = function($question) {
-        $('.quiz-checkbox, .quiz-radio', $question)
-            .removeAttr('checked')
-            .parent()
-            .removeClass('quiz-correct quiz-wrong');
-    }
+    clearOptions: function(self) {    
+        self = (self == undefined) ? this : self;
+        $('.quiz-radio', self.question).removeAttr('checked');
+        self.clearCorrection();
+    },
     
-    var clearCorrection = function($question) {
-        $('.quiz-checkbox, .quiz-radio', $question)
-            .parent()
-            .removeClass('quiz-correct quiz-wrong');
-    }
+    clearCorrection: function(self) {
+        self = (self == undefined) ? this : self;
+        
+        if ( self.question.data('submitted') == true ) {
+            $('.quiz-option', self.question).removeClass('quiz-correct quiz-wrong');
+            self.question.data('submitted', false);
+        }                
+    },
     
-    var counter = 1;
-    $('.quiz .quiz-question').each(function() {
-        var $this = $(this);
-        counter++;
+    init: function() {   
+        var self = this;
         
-        var isSingle = true;
-        // create a checkbox, if it's a multiple-choice question, otherwise, a radio
-        if ( $this.hasClass('quiz-multiple') ) {
-            var template = '<input type="checkbox" class="quiz-checkbox"/>';
-            isSingle = false;
-        } else {
-            var template = '<input type="radio" class="quiz-radio" name="quiz-question-' + counter + '-radiogroup"/>';
-            $this.addClass('quiz-single');
-        }
+        var template = Mustache.compile('<input type="radio" class="quiz-radio" ' +
+        'name="quiz-question-{{numQuestion}}-options" ' +
+        'id="quiz-question-{{numQuestion}}-option-{{numOption}}"/>' +
+        '<label for="quiz-question-{{numQuestion}}-option-{{numOption}}">{{label}}</label>');
         
-        // add to each option
-        $('.quiz-answer, .quiz-option', $this).each(function() {
+        // creates radio buttons for the quiz
+        var numOption = 0;
+        $('.quiz-answer, .quiz-option', self.question).each(function() {
             var $this = $(this);
             $this.addClass('quiz-option');
-            $this.prepend(template);
+            $this.html(template({
+                numQuestion: self.numQuestion, 
+                numOption: ++numOption, 
+                label: $this.html() 
+            }));
         });
         
-        var scope = $this;
-        $('.quiz-checkbox, .quiz-radio', $this).each(function() {
-            $(this).click(function() {
-                if ( scope.data('submitted') == true ) {
-                    clearCorrection(scope);
-                    scope.data('submitted', false);
-                }                
+        // bind clearOptions to the quiz-clear elements, if any
+        $('.quiz-clear', self.question).each(function() {
+            $(this).bind('click.clearOptions', function() { self.clearOptions(self) });
+        });
+       
+        // clear correction if there are correct/wrong classes but the options checked changed
+        $('.quiz-radio', self.question).each(function() {
+            $(this).bind('click.clearCorrection', function() { self.clearCorrection(self) });
+        });
+        
+        // bind makeCorrection to the quiz-submit elements, if any
+        $('.quiz-submit', self.question).each(function() {
+            $(this).bind('click.makeCorrection', function() { self.makeCorrection(self) });
+        });
+    }
+}
+
+QuizMultipleHandler = function (question, numQuestion) {
+    this.question = question;
+    this.numQuestion = numQuestion;
+}
+
+QuizMultipleHandler.prototype = {
+
+    makeCorrection: function(self) {
+        self = (self == undefined) ? this : self;
+        self.question.data('submitted', true);
+        
+        var isCorrect = true;
+        
+        $('.quiz-checkbox', self.question).each(function() {
+            var $checkbox = $(this);
+            var $option = $checkbox.parent();
+            
+            isCorrect = isCorrect && 
+                ($option.hasClass('quiz-answer') == $checkbox.is(':checked'));
+        });
+        
+        $('.quiz-checkbox:checked', self.question).each(function() {
+            var $radio = $(this);
+            var $option = $radio.parent();
+            
+            if ( isCorrect )
+                $option.addClass('quiz-correct');
+            else
+                $option.addClass('quiz-wrong');
+        });
+    },
+    
+    clearOptions: function(self) {    
+        self = (self == undefined) ? this : self;
+        $('.quiz-checkbox', self.question).removeAttr('checked');
+        self.clearCorrection();
+    },
+    
+    clearCorrection: function(self) {
+        self = (self == undefined) ? this : self;
+        
+        if ( self.question.data('submitted') == true ) {
+            $('.quiz-option', self.question).removeClass('quiz-correct quiz-wrong');
+            self.question.data('submitted', false);
+        }                
+    },
+    
+    init: function() {   
+        var self = this;
+        
+        var template = Mustache.compile('<input type="checkbox" class="quiz-checkbox" ' +
+        'id="quiz-question-{{numQuestion}}-option-{{numOption}}"/>' +
+        '<label for="quiz-question-{{numQuestion}}-option-{{numOption}}">{{label}}</label>');
+        
+        var numOption = 0;
+        $('.quiz-answer, .quiz-option', self.question).each(function() {
+            var $this = $(this);
+            $this.addClass('quiz-option');
+            $this.html(template({
+                numQuestion: self.numQuestion, 
+                numOption: ++numOption, 
+                label: $this.html() 
+            }));
+        });
+        
+        $('.quiz-clear', self.question).each(function() {
+            $(this).bind('click.clearOptions', function() { self.clearOptions(self) });
+        });
+       
+        $('.quiz-checkbox', self.question).each(function() {
+            $(this).bind('click.clearCorrection', function() { self.clearCorrection(self) });
+        });
+        
+        $('.quiz-submit', self.question).each(function() {
+            $(this).bind('click.makeCorrection', function() { self.makeCorrection(self) });
+        });
+    }
+}
+
+QuizJs = {
+    handlers: {
+        'quiz-single': QuizSingleHandler,
+        'quiz-multiple': QuizMultipleHandler
+        // 'quiz-objective': QuizObjectiveHandler
+    },
+    
+    quizzes: [],
+    
+    init: function() {
+        var self = this;
+        var counter = 0;
+        
+        for (var handler in self.handlers)
+            $('.quiz .' + handler).each(function() {
+                var newQuiz = new self.handlers[handler]($(this), ++counter);
+                self.quizzes.push(newQuiz);
+                newQuiz.init();
             });
-        });
-        // bind makeCorrection() to .quiz-submit elements
-        $('.quiz-submit', $this).click(function() {
-            makeCorrection(scope);
-        });
-        
-        // bind clearOptions() to .quiz-reset elements
-        $('.quiz-clear', $this).click(function() {
-            clearOptions(scope);
-        });
-    });
-});
+    },
+
+};
