@@ -5,70 +5,209 @@
         <meta charset="UTF-8"/>
         <title>jQuery Quiz plugin demo</title>
         <link type="text/css" rel="stylesheet" href="demo.css"/>
+        <link type="text/css" rel="stylesheet" href="default.css"/>
     </head>
     <body>
     
         <div id="content">
         
-        <p>Welcome to the <b>jQuery Quiz Plugin</b> demo! This is
+        <h1>jQuery Quiz Plugin</h1>
+        
+        <p>Welcome to the <b><a href="https://github.com/lurodrigo/jquery.quiz.js">jQuery Quiz Plugin</a></b> demo! This is
         a very, very easy to use plugin and requires little knowledge of 
-        javascript to apply. In fact, all javascript you'll need most
-        of the time is only a one-line code that you can simply copy-and-paste:</p>
+        javascript to apply. In fact, all javascript you'll need in most
+        of the cases is only a one-line code that you can simply copy-and-paste:</p>
         
-        <code class="javascript">
-$.quiz();      
-        </code>
+        <pre><code class="javascript">$.quiz();</pre></code>
+         
+        <h2>Prerequisites</h2>
+        <p>Before start using, though, you need to set up our few dependencies:
+        <a href="http://jquery.com">jQuery</a> and 
+        <a href="https://github.com/janl/mustache.js/">Mustache.js</a>.</p>
         
-        <p>How much is 2+2?</p>      
+        <h2>Markup</h2>
+        <p>There are 3 built-in quiz classes (called handler classes) with jQuery Quiz: <b>quiz-single</b>,
+        for single-choice quizzes; <b>quiz-multiple</b>, for multiple-choice 
+        quizzes; and <b>quiz-objective</b>, which requires the quiz-taker to 
+        write the correct answer. Let's make our first quiz, then!</p>
+         
+        <pre><code class="html">
+&lt;div class=&quot;quiz-single&quot;&gt;
+    &lt;p&gt;How much is 2+2?&lt;/p&gt;  
+    &lt;li class=&quot;quiz-option&quot;&gt;1&lt;/li&gt;
+    &lt;li class=&quot;quiz-option&quot;&gt;2&lt;/li&gt;
+    &lt;li class=&quot;quiz-option&quot;&gt;3&lt;/li&gt;
+    &lt;li class=&quot;quiz-answer&quot;&gt;4&lt;/li&gt;
+&lt;/div&gt;
+        </pre></code> 
+         
+        <p>The outer div with <b>quiz-single</b> as class says that we have a
+        single-choice quiz, that is, a quiz where there is only one correct
+        answer (and, therefore, the quiz taker can only select one option).
+        The <b>li</b> tags with the class <b>quiz-answer</b> correspond to the
+        correct answers of the quiz, and the others are the wrong answers. 
+        Only elements with the class <b>quiz-option</b> will be considered options,
+        but don't worry: elements with quiz-answer class will automatically have
+        quiz-option class added (so you can style then easily!).</p>
+    
+        <p>This is the result we get:</p>
+         
+        <div class="quiz-single">
+            <p>How much is 2+2?</p>  
+            <li class="quiz-option">1</li>
+            <li class="quiz-option">2</li>
+            <li class="quiz-option">3</li>
+            <li class="quiz-answer">4</li>
+        </div> 
         
-            <ul class="quiz-single">
-                <li class="quiz-option">1</li>
-                <li class="quiz-option">2</li>
-                <li class="quiz-option">3</li>
-                <li class="quiz-answer">4</li>
-                <button class="quiz-submit">Submit</button>
-                <button class="quiz-clear">Clear</button>
-                <button class="quiz-show-answer">Show Answer</button>
-                <button class="quiz-toggle-hint">Want a hint?</button>
-                <div class="quiz-hint">The correct answers have -b/a = 2</div>
-            </ul>
+        <p>Ok, the quiz is there with the options, but where can I submit it?
+        Yeah, you forgot to add the <b>controls</b>. There are 5 predefined
+        classes of controls:</p>
+        
+        <p>
+        <li><b>quiz-submit</b>: when clicked, submits you answer.</li>
+        <li><b>quiz-clear</b>: when clicked, clears the answers checked.</li>
+        <li><b>quiz-show-answer</b>: when clicked, show the correct answer.</li>
+        <li><b>quiz-toggle-hint</b>: when clicked, shows/hides a hint (any element
+        with class <b>quiz-hint</b>) for solving the problem.</li>
+        <li><b>quiz-explanation</b>: a element that is only showed after the quiz taker
+        submits the correct answer, explaining why are the options submitted correct
+        and the others wrong.</li>
+        </p>
+        
+        <p>All of them are of optional usage, although I don't thing you can make
+        anything useful without a quiz-submit :P. Let's then try them all at the same time, 
+        so you can see what do they do!</p>
+        
+        <pre><code class="html">
+&lt;div class=&quot;quiz-single&quot;&gt;
+    &lt;p&gt;How much is 2+2?&lt;/p&gt;  
+    
+    &lt;li class=&quot;quiz-option&quot;&gt;1&lt;/li&gt;
+    &lt;li class=&quot;quiz-option&quot;&gt;2&lt;/li&gt;
+    &lt;li class=&quot;quiz-option&quot;&gt;3&lt;/li&gt;
+    &lt;li class=&quot;quiz-answer&quot;&gt;4&lt;/li&gt;
+    
+    &lt;button class=&quot;quiz-submit&quot;&gt;Submit&lt;/button&gt;
+    &lt;button class=&quot;quiz-clear&quot;&gt;Clear&lt;/button&gt;
+    &lt;button class=&quot;quiz-show-answer&quot;&gt;Show Answer&lt;/button&gt;
+    &lt;button class=&quot;quiz-toggle-hint&quot;&gt;Want a hint?&lt;/button&gt;
+    &lt;p class=&quot;quiz-hint&quot;&gt;Try decomposing 2 + 2 into 1 + 1 + 1 + 1.&lt;/p&gt;
+    
+    &lt;p class=&quot;quiz-explanation&quot;&gt;&lt;b&gt;Explanation&lt;/b&gt;: since 2 + 2 is 
+    1 + 1 + 1 + 1, 2 + 2 is also 4*1, and, since any number times one is 
+    the number itself, the answer is 4.&lt;/p&gt;
+&lt;/div&gt;
+        </pre></code> 
+         
+        <div class="quiz-single">
+            <p>How much is 2+2?</p>  
             
-        <div class="quiz">
-            <p>Which of these are roots of the equation x²+x-6 = 0?</p>
-            <ul class="quiz-multiple" id="q2">
-                <li class="quiz-answer">-3</li>
-                <li class="quiz-option">-2</li>
-                <li class="quiz-option">0</li>
-                <li class="quiz-answer">2</li>
-                <li class="quiz-option">3</li>
-                <button class="quiz-submit">Submit</button>
-                <button class="quiz-clear">Clear</button>
-                <button class="quiz-show-answer">Show me the answers!</button>
-            </ul>
+            <li class="quiz-option">1</li>
+            <li class="quiz-option">2</li>
+            <li class="quiz-option">3</li>
+            <li class="quiz-answer">4</li>
             
-            <p>Which of these lines are paralell to f(x) = 2x + 3?</p>
-            <ul class="quiz-multiple" id="q3">
-                <li class="quiz-option">2x -3y = 0</li>
-                <li class="quiz-answer">-4x + 2y = 5</li>
-                <li class="quiz-option">5x - 10y = 20</li>
-                <li class="quiz-answer">x/2 - y/4 = 1</li>
-                <li class="quiz-option">7/x = 3.5/y</li>
-                <button class="quiz-submit">Submit</button>
-                <button class="quiz-clear">Clear</button>
-                <button class="quiz-toggle-hint">Want a hint?</button>
-                <div class="quiz-hint">The correct answers have -b/a = 2</div>
-            </ul>
+            <button class="quiz-submit">Submit</button>
+            <button class="quiz-clear">Clear</button>
+            <button class="quiz-show-answer">Show Answer</button>
+            <button class="quiz-toggle-hint">Want a hint?</button>
+            <p class="quiz-hint">Try decomposing 2 + 2 into 1 + 1 + 1 + 1.</p>
             
-            <div class="quiz-objective quiz-sensitive" data-answer="2x">
-                Quanto é x + x?
-                <div class="quiz-answer-box"></div>
-                <button class="quiz-submit">Submit</button>
-                <button class="quiz-clear">Clear</button>
-                 <button class="quiz-show-answer">Show me the answers!</button>
-                <button class="quiz-toggle-hint">Want a hint?</button>
-                <div class="quiz-hint">The correct answers have -b/a = 2</div>
-            </div>
+            <p class="quiz-explanation"><b>Explanation</b>: since 2 + 2 is 
+            1 + 1 + 1 + 1, 2 + 2 is also 4*1, and, since any number times one is 
+            the number itself, the answer is 4.</p>
         </div>
+        
+        <p>Try submitting it. Note that the options checked get stylized:
+        if your answer is correct, the li elements earn a class <b>quiz-correct</b>,
+        otherwise, a class <b>quiz-wrong</b>.</p>
+        
+        <p>Let's try creating a multiple-choice quiz. The only noticeable difference is 
+        that we use the class quiz-multiple instead of quiz-single:</p>
+        
+        <pre><code class="html">
+&lt;div class=&quot;quiz-multiple&quot;&gt;
+    &lt;p&gt;Which of these are roots of the equation x&sup2;+x-6 = 0?&lt;/p&gt;
+    &lt;li class=&quot;quiz-answer&quot;&gt;-3&lt;/li&gt;
+    &lt;li class=&quot;quiz-option&quot;&gt;-2&lt;/li&gt;
+    &lt;li class=&quot;quiz-option&quot;&gt;0&lt;/li&gt;
+    &lt;li class=&quot;quiz-answer&quot;&gt;2&lt;/li&gt;
+    &lt;li class=&quot;quiz-option&quot;&gt;3&lt;/li&gt;
+    &lt;button class=&quot;quiz-submit&quot;&gt;Submit&lt;/button&gt;
+    &lt;button class=&quot;quiz-clear&quot;&gt;Clear&lt;/button&gt;
+    
+    &lt;p class=&quot;quiz-explanation&quot;&gt;&lt;b&gt;Explanation&lt;/b&gt;: Gerard's relations
+    tell us that the roots of this equation must satisfy the conditions
+    (1) r&lt;sub&gt;1&lt;/sub&gt; + r&lt;sub&gt;2&lt;/sub&gt; = -1, and (2) 
+    r&lt;sub&gt;1&lt;/sub&gt; * r&lt;sub&gt;2&lt;/sub&gt; = -6. -3 and 2 are, thus, the only
+    numbers that satisfy both conditions.&lt;/p&gt;
+&lt;/div&gt;
+        </pre></code>    
+            
+        <p>Which gives us the following quiz: </p>    
+            
+        <div class="quiz-multiple">
+            <p>Which of these are roots of the equation x²+x-6 = 0?</p>
+            <li class="quiz-answer">-3</li>
+            <li class="quiz-option">-2</li>
+            <li class="quiz-option">0</li>
+            <li class="quiz-answer">2</li>
+            <li class="quiz-option">3</li>
+            <button class="quiz-submit">Submit</button>
+            <button class="quiz-clear">Clear</button>
+            
+            <p class="quiz-explanation"><b>Explanation</b>: Gerard's relations
+            tell us that the roots of this equation must satisfy the conditions
+            (1) r<sub>1</sub> + r<sub>2</sub> = -1, and (2) 
+            r<sub>1</sub> * r<sub>2</sub> = -6. -3 and 2 are, thus, the only
+            numbers that satisfy both conditions.</p>
+        </div>
+          
+        <h2>JavaScript API</h2>
+        
+        <p>Well, as said in the first paragraph, all JavaScript you'll need in most 
+        of the cases is simply</p>
+        
+        <pre><code class="javascript">$.quiz();</pre></code>
+        
+        <p>which looks for all elements with a handler class (by default, 
+        quiz-single, quiz-multiple, and quiz-objective) and transform them into
+        quizzes. However, there are times when you need to be more specific on
+        which quizzes to transform or not. To do this, you can simply use 
+        standard jQuery way:<p>
+        
+        <pre><code class="javascript">$('#quiz-id').quiz();</pre></code>
+        
+        <p>or also</p>
+        
+        <pre><code class="javascript">$.quiz($('#quiz-id'));</pre></code>
+        
+        <p>You can also specify, instead of a element, a context in which to search,
+        like 
+        
+        <pre><code class="javascript">$('#quizzes').quiz(); // search for quizzes only inside #quizzes.</pre></code> 
+        <pre><code class="javascript">$.quiz($('#quizzes')); // same as above.</pre></code> 
+         
+        <h2>Extending our plugin</h2> 
+         
+        <p>Besides our three predefined handlers, you can also create your own,
+        specific handler to fully meet your needs. To do this, simply add
+        it to the <code>$.quiz.handlers</code> object, with a key containing 
+        the css classname for the handler (e.g. 'quiz-something'), and the value,
+        the name of your JavaScript type.
+        
+        <p>The API will pass to the constructor of your class two parameters:
+        <code>question</code>, a jQuery object pointing to the question to transform,
+        and <code>idQuestion</code>, which is its id, or an distinct integer if it doesn't have
+        and id. The objects of the class must have a method <code>init()</code>,
+        which will render the quiz properly.</p>
+        
+        <h2>Finally...</h2>
+        
+        <p>That's it! Feel free to study the <a href="https://github.com/lurodrigo/jquery.quiz.js/blob/master/jquery.quiz.js">
+        source code</a> and create your own quiz handlers! See you!</p>
+         
         </div>
         
         <script type="text/javascript" src="jquery.js"></script>
@@ -78,5 +217,10 @@ $.quiz();
         <script type="text/javascript">
             $.quiz();
         </script>
+        
+        <script type="text/javascript">
+			hljs.tabReplace = '    ';
+			hljs.initHighlightingOnLoad();
+		</script>
     </body>
 </html>

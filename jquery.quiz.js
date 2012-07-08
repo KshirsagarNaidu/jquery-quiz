@@ -18,9 +18,10 @@ QuizSingleHandler.prototype = {
             var $radio = $(this);
             var $option = $radio.parent();
             
-            if ( $option.hasClass('quiz-answer') )
+            if ( $option.hasClass('quiz-answer') ) {
                 $option.addClass('quiz-correct');
-            else
+                self.explanationVisible(true);  
+            } else
                 $option.addClass('quiz-wrong');
         });
     },
@@ -38,17 +39,25 @@ QuizSingleHandler.prototype = {
             $('.quiz-option', self.question).removeClass('quiz-correct quiz-wrong');
 
             self.question.data('submitted', false);
-        }                
+        }      
+        
+        self.explanationVisible(false);          
     },
     
     showAnswer: function(self) {
         self = (self == undefined) ? this : self;
+        self.clearOptions();
         
         $('.quiz-answer', self.question).each(function() {
             $(this).addClass('quiz-correct');
+            
+            $('.quiz-radio', self.question).each(function() {
+                $(this).attr('checked', 'checked');
+            });
         });
         
         self.question.data('submitted', true);
+        self.explanationVisible(true);
     },
     
     toggleHint: function(self) {
@@ -59,6 +68,16 @@ QuizSingleHandler.prototype = {
                 $(this).css('display', 'block');
             else
                 $(this).css('display', 'none');
+        });
+    },
+    
+    explanationVisible: function(mode, self) {
+        self = (self == undefined) ? this : self;
+        
+        mode = (mode) ? 'block' : 'none';
+        
+        $('.quiz-explanation', self.question).each(function() {
+            $(this).css('display', mode);
         });
     },
     
@@ -108,6 +127,7 @@ QuizSingleHandler.prototype = {
         });
 
         self.toggleHint();
+        self.explanationVisible(false);
     }
 }
 
@@ -136,9 +156,10 @@ QuizMultipleHandler.prototype = {
             var $radio = $(this);
             var $option = $radio.parent();
             
-            if ( isCorrect )
+            if ( isCorrect ) {
                 $option.addClass('quiz-correct');
-            else
+                self.explanationVisible(true);  
+            } else
                 $option.addClass('quiz-wrong');
         });
     },
@@ -150,23 +171,32 @@ QuizMultipleHandler.prototype = {
     },
     
     clearCorrection: function(self) {
-        self = (self == undefined) ? this : self;
+        self = (self == undefined) ? this : self; 
         
         if ( self.question.data('submitted') == true ) {
             $('.quiz-option', self.question).removeClass('quiz-correct quiz-wrong');
 
             self.question.data('submitted', false);
-        }                
+        }   
+        
+        self.explanationVisible(false);             
     },
       
     showAnswer: function(self) {
         self = (self == undefined) ? this : self;
+        self.clearOptions();
         
         $('.quiz-answer', self.question).each(function() {
-            $(this).addClass('quiz-correct');
+            var $this = $(this);
+            $this.addClass('quiz-correct');
+            
+            $('.quiz-checkbox', $this).each(function() {
+                $(this).attr('checked', 'checked');
+            });
         });
         
         self.question.data('submitted', true);
+        self.explanationVisible(true);
     },
     
     toggleHint: function(self) {
@@ -177,6 +207,16 @@ QuizMultipleHandler.prototype = {
                 $(this).css('display', 'block');
             else
                 $(this).css('display', 'none');
+        });
+    },
+    
+    explanationVisible: function(mode, self) {
+        self = (self == undefined) ? this : self;
+        
+        mode = (mode) ? 'block' : 'none';
+        
+        $('.quiz-explanation', self.question).each(function() {
+            $(this).css('display', mode);
         });
     },
       
@@ -220,6 +260,7 @@ QuizMultipleHandler.prototype = {
         });
 
         self.toggleHint();
+        self.explanationVisible(false);
     }
 }
 
