@@ -25,10 +25,10 @@
         <a href="http://jquery.com">jQuery</a> and 
         <a href="https://github.com/janl/mustache.js/">Mustache.js</a>.</p>
         
-        <h2>Markup</h2>
-        <p>There are 3 built-in quiz classes (called handler classes) with jQuery Quiz: <b>quiz-single</b>,
-        for single-choice quizzes; <b>quiz-multiple</b>, for multiple-choice 
-        quizzes; and <b>quiz-objective</b>, which requires the quiz-taker to 
+        <h2>Single-choice and multiple-choice quizzes</h2>
+        <p>There are 3 built-in quiz classes (called handler classes) with jQuery Quiz: <code>quiz-single</code>,
+        for single-choice quizzes; <code>quiz-multiple</code>, for multiple-choice 
+        quizzes; and <code>quiz-text</code>, which requires the quiz-taker to 
         write the correct answer. Let's make our first quiz, then!</p>
          
         <pre><code class="html">
@@ -41,12 +41,12 @@
 &lt;/div&gt;
         </pre></code> 
          
-        <p>The outer div with <b>quiz-single</b> as class says that we have a
+        <p>The outer div with <code>quiz-single</code> as class says that we have a
         single-choice quiz, that is, a quiz where there is only one correct
         answer (and, therefore, the quiz taker can only select one option).
-        The <b>li</b> tags with the class <b>quiz-answer</b> correspond to the
+        The <code>li</code> tags with the class <code>quiz-answer</code> correspond to the
         correct answers of the quiz, and the others are the wrong answers. 
-        Only elements with the class <b>quiz-option</b> will be considered options,
+        Only elements with the class <code>quiz-option</code> will be considered options,
         but don't worry: elements with quiz-answer class will automatically have
         quiz-option class added (so you can style then easily!).</p>
     
@@ -65,12 +65,12 @@
         classes of controls:</p>
         
         <p>
-        <li><b>quiz-submit</b>: when clicked, submits you answer.</li>
-        <li><b>quiz-clear</b>: when clicked, clears the answers checked.</li>
-        <li><b>quiz-show-answer</b>: when clicked, show the correct answer.</li>
-        <li><b>quiz-toggle-hint</b>: when clicked, shows/hides a hint (any element
-        with class <b>quiz-hint</b>) for solving the problem.</li>
-        <li><b>quiz-explanation</b>: a element that is only showed after the quiz taker
+        <li><code>quiz-submit</code>: when clicked, submits you answer.</li>
+        <li><code>quiz-clear</code>: when clicked, clears the answers checked.</li>
+        <li><code>quiz-show-answer</code>: when clicked, show the correct answer.</li>
+        <li><code>quiz-toggle-hint</code>: when clicked, shows/hides a hint (any element
+        with class <code>quiz-hint</code>) for solving the problem.</li>
+        <li><code>quiz-explanation</code>: a element that is only showed after the quiz taker
         submits the correct answer, explaining why are the options submitted correct
         and the others wrong.</li>
         </p>
@@ -120,8 +120,8 @@
         </div>
         
         <p>Try submitting it. Note that the options checked get stylized:
-        if your answer is correct, the li elements earn a class <b>quiz-correct</b>,
-        otherwise, a class <b>quiz-wrong</b>.</p>
+        if your answer is correct, the li elements earn a class <code>quiz-correct</code>,
+        otherwise, a class <code>quiz-wrong</code>.</p>
         
         <p>Let's try creating a multiple-choice quiz. The only noticeable difference is 
         that we use the class quiz-multiple instead of quiz-single:</p>
@@ -163,6 +163,65 @@
             r<sub>1</sub> * r<sub>2</sub> = -6. -3 and 2 are, thus, the only
             numbers that satisfy both conditions.</p>
         </div>
+        
+        <h2>Using quiz-text</h2>
+        
+        <p><code>quiz-text</code> quizzes work somewhat differently than the previous
+        types, but not too much that you'd have a hard time trying to put it to work.
+        All controls that worked before will continue to work now. The main 
+        difference is that you have to create a <code>input type="text"</code> or
+        <code>textarea</code> with the class <code>quiz-answerbox</code>. This
+        is the input field which will receive the user's input.</p>
+        
+        <p>Then, you can put the attribute <code>data-answer</code> containing
+        the correct answer for that quiz. By default, the correction will be
+        case-insensitive and trimmed (eliminating whitespace before and after, 
+        the string). However, you can change it by specifying the attributes
+        <code>data-sensitive</code> and <code>data-notrim</code>, respectively.
+        Let's see?</p>
+        
+        <pre><code class="html">
+&lt;div class=&quot;quiz-text&quot; data-answer=&quot;1024&quot;&gt;
+    &lt;p&gt;What is the smallest perfect square that is bigger than 1000?&lt;/p&gt;
+    &lt;input type=&quot;text&quot; class=&quot;quiz-answerbox&quot;/&gt;
+    &lt;button class=&quot;quiz-submit&quot;&gt;Submit&lt;/button&gt;
+    &lt;button class=&quot;quiz-clear&quot;&gt;Clear&lt;/button&gt;
+    &lt;div class=&quot;quiz-hint&quot;&gt;It's a power of 2.&lt;/div&gt;
+    &lt;div class=&quot;quiz-explanation&quot;&gt;There's nothing to explain, it's 1024.&lt;/div&gt;
+&lt;/div&gt;
+        </pre></code>   
+        
+        <p>Brings up the following quiz:</p>
+
+        <div class="quiz-text" data-answer="1024">
+            <p>What is the smallest perfect square that is bigger than 1000?</p>
+            <input type="text" class="quiz-answerbox"/>
+            <button class="quiz-submit">Submit</button>
+            <button class="quiz-clear">Clear</button>
+            <div class="quiz-hint">It's a power of 2.</div>
+            <div class="quiz-explanation">There's nothing to explain, it's 1024.</div>
+        </div>
+        
+        <p>If you are a bit versed in JavaScript, you can also specify your own
+        validation function via the attribute data-validator. Notice, however,
+        that if you don't specify an attribute <code>data-answer</code> you
+        won't be able to add a <code>quiz-show-answer</code> element.</p>
+ 
+        <pre><code class="html">
+&lt;div class=&quot;quiz-text&quot; data-validator=&quot;function(x) {return x.length &lt;= 140;}&quot;&gt;
+    &lt;p&gt;Type 140 or less characters, please.&lt;/p&gt;
+    &lt;p&gt;&lt;textarea class=&quot;quiz-answerbox&quot; cols=&quot;70&quot;&gt;&lt;/textarea&gt;&lt;/p&gt;
+    &lt;button class=&quot;quiz-submit&quot;&gt;Submit&lt;/button&gt;
+    &lt;button class=&quot;quiz-clear&quot;&gt;Clear&lt;/button&gt;
+&lt;/div&gt;
+        </pre></code>
+        
+        <div class="quiz-text" data-validator="function(x) {return x.length <= 140;}">
+            <p>Type 140 or less characters, please.</p>
+            <p><textarea class="quiz-answerbox" cols="70"></textarea></p>
+            <button class="quiz-submit">Submit</button>
+            <button class="quiz-clear">Clear</button>
+        </div>
           
         <h2>JavaScript API</h2>
         
@@ -172,7 +231,7 @@
         <pre><code class="javascript">$.quiz();</pre></code>
         
         <p>which looks for all elements with a handler class (by default, 
-        quiz-single, quiz-multiple, and quiz-objective) and transform them into
+        quiz-single, quiz-multiple, and quiz-text) and transform them into
         quizzes. However, there are times when you need to be more specific on
         which quizzes to transform or not. To do this, you can simply use 
         standard jQuery way:<p>
@@ -188,6 +247,29 @@
         
         <pre><code class="javascript">$('#quizzes').quiz(); // search for quizzes only inside #quizzes.</pre></code> 
         <pre><code class="javascript">$.quiz($('#quizzes')); // same as above.</pre></code> 
+        
+        <p>There's an array, <code>$.quiz.quizzes</code> containing the handler
+        object of the quizzes handled.</p> All of them have the following methods
+        implemented:
+        
+        <p>
+        <li><code>.makeCorrection()</code>: the same effect as clicking
+        a element with the class 'quiz-submit'.</li>
+        <li><code>.clear()</code>: the same effect as clicking
+        a element with the class 'quiz-clear'.</li>
+        <li><code>.clearCorrection()</code>: removes any 'quiz-correct' or
+        'quiz-wrong' classes.</li>
+        <li><code>.showAnswer()</code>: the same effect as clicking
+        a element with the class 'quiz-show-answer'.</li>
+        <li><code>.hintVisible(boolean)</code>: shows or hides the hint.</li>
+        <li><code>.toggleHint()</code>: the same effect as clicking
+        a element with the class 'quiz-toggle-hint'.</li>
+        <li><code>.explanationVisible(boolean)</code>: shows or hides
+        the explanation.</li>
+        </p>
+        
+        <p>Finally, there's an attribute <code>.question</code>, which contains
+        the jQuery object of the quiz.</p>
          
         <h2>Extending our plugin</h2> 
          

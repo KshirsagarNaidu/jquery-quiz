@@ -1,6 +1,10 @@
 
 (function( $ ) {
 
+function isundef(x, y) {
+    return (x == undefined) ? y : x;
+}
+
 QuizSingleHandler = function (question, idQuestion) {
     this.question = question;
     this.idQuestion = idQuestion;
@@ -11,7 +15,7 @@ QuizSingleHandler.prototype = {
     makeCorrection: function(self) {
         // when used as a callback, self will be passed as parameter,
         // since 'this' will be overridden by jquery
-        self = (self == undefined) ? this : self;
+        var self = isundef(self, this);
         self.question.data('submitted', true);
         
         $('.quiz-radio:checked', self.question).each(function() {
@@ -26,14 +30,14 @@ QuizSingleHandler.prototype = {
         });
     },
     
-    clearOptions: function(self) {    
-        self = (self == undefined) ? this : self;
+    clear: function(self) {    
+        var self = isundef(self, this);
         $('.quiz-radio', self.question).removeAttr('checked');
         self.clearCorrection();
     },
     
     clearCorrection: function(self) {
-        self = (self == undefined) ? this : self;
+        var self = isundef(self, this);
         
         if ( self.question.data('submitted') == true ) {
             $('.quiz-option', self.question).removeClass('quiz-correct quiz-wrong');
@@ -45,8 +49,8 @@ QuizSingleHandler.prototype = {
     },
     
     showAnswer: function(self) {
-        self = (self == undefined) ? this : self;
-        self.clearOptions();
+        var self = isundef(self, this);
+        self.clear();
         
         $('.quiz-answer', self.question).each(function() {
             $(this).addClass('quiz-correct');
@@ -60,19 +64,27 @@ QuizSingleHandler.prototype = {
         self.explanationVisible(true);
     },
     
+    hintVisible: function(mode, self) {
+        var self = isundef(self, this);
+        mode = (mode) ? 'block' : 'none';
+        $('.quiz-hint', self.question).each(function() {
+            $(this).css('display', mode);
+        });
+    },
+    
     toggleHint: function(self) {
-        self = (self == undefined) ? this : self;
+        var self = isundef(self, this);
         
         $('.quiz-hint', self.question).each(function() {
             if ( $(this).css('display') == 'none' )
-                $(this).css('display', 'block');
+                self.hintVisible(true);
             else
-                $(this).css('display', 'none');
+                self.hintVisible(false);
         });
     },
     
     explanationVisible: function(mode, self) {
-        self = (self == undefined) ? this : self;
+        var self = isundef(self, this);
         
         mode = (mode) ? 'block' : 'none';
         
@@ -102,9 +114,9 @@ QuizSingleHandler.prototype = {
             }));
         });
         
-        // bind clearOptions to the quiz-clear elements, if any
+        // bind clear to the quiz-clear elements, if any
         $('.quiz-clear', self.question).each(function() {
-            $(this).bind('click.clearOptions', function() { self.clearOptions(self) });
+            $(this).bind('click.clear', function() { self.clear(self) });
         });
        
         // clear correction if there are correct/wrong classes but the options checked changed
@@ -126,7 +138,7 @@ QuizSingleHandler.prototype = {
             $(this).bind('click.toggleHint', function() { self.toggleHint(self) });
         });
 
-        self.toggleHint();
+        self.hintVisible(false);
         self.explanationVisible(false);
     }
 }
@@ -139,7 +151,7 @@ QuizMultipleHandler = function (question, idQuestion) {
 QuizMultipleHandler.prototype = {
 
     makeCorrection: function(self) {
-        self = (self == undefined) ? this : self;
+        var self = isundef(self, this);
         self.question.data('submitted', true);
         
         var isCorrect = true;
@@ -164,14 +176,14 @@ QuizMultipleHandler.prototype = {
         });
     },
     
-    clearOptions: function(self) {    
-        self = (self == undefined) ? this : self;
+    clear: function(self) {    
+        var self = isundef(self, this);
         $('.quiz-checkbox', self.question).removeAttr('checked');
         self.clearCorrection();
     },
     
     clearCorrection: function(self) {
-        self = (self == undefined) ? this : self; 
+        var self = isundef(self, this);
         
         if ( self.question.data('submitted') == true ) {
             $('.quiz-option', self.question).removeClass('quiz-correct quiz-wrong');
@@ -183,8 +195,8 @@ QuizMultipleHandler.prototype = {
     },
       
     showAnswer: function(self) {
-        self = (self == undefined) ? this : self;
-        self.clearOptions();
+        var self = isundef(self, this);
+        self.clear();
         
         $('.quiz-answer', self.question).each(function() {
             var $this = $(this);
@@ -199,19 +211,27 @@ QuizMultipleHandler.prototype = {
         self.explanationVisible(true);
     },
     
+    hintVisible: function(mode, self) {
+        var self = isundef(self, this);
+        mode = (mode) ? 'block' : 'none';
+        $('.quiz-hint', self.question).each(function() {
+            $(this).css('display', mode);
+        });
+    },
+    
     toggleHint: function(self) {
-        self = (self == undefined) ? this : self;
+        var self = isundef(self, this);
         
         $('.quiz-hint', self.question).each(function() {
             if ( $(this).css('display') == 'none' )
-                $(this).css('display', 'block');
+                self.hintVisible(true);
             else
-                $(this).css('display', 'none');
+                self.hintVisible(false);
         });
     },
     
     explanationVisible: function(mode, self) {
-        self = (self == undefined) ? this : self;
+        var self = isundef(self, this);
         
         mode = (mode) ? 'block' : 'none';
         
@@ -240,7 +260,7 @@ QuizMultipleHandler.prototype = {
         });
         
         $('.quiz-clear', self.question).each(function() {
-            $(this).bind('click.clearOptions', function() { self.clearOptions(self) });
+            $(this).bind('click.clear', function() { self.clear(self) });
         });
        
         $('.quiz-checkbox', self.question).each(function() {
@@ -259,37 +279,151 @@ QuizMultipleHandler.prototype = {
             $(this).bind('click.toggleHint', function() { self.toggleHint(self) });
         });
 
-        self.toggleHint();
+        self.hintVisible(false);
         self.explanationVisible(false);
     }
 }
 
-QuizObjectiveHandler = function(question, idQuestion) { 
+QuizTextHandler = function(question, idQuestion) { 
     this.question = question;
     this.idQuestion = idQuestion;
 }
 
-QuizObjectiveHandler.prototype = {
+QuizTextHandler.prototype = {
+    
+    makeCorrection: function(self) {
+        var self = isundef(self, this);
+        self.clearCorrection();
+        self.question.data('submitted', true);
+
+        var userAnswer = '';
+        $('.quiz-answerbox', self.question).each(function() {
+            var $answerbox = $(this);
+            userAnswer = $answerbox.val();
+        });
+        
+        if ( !self.caseSensitive ) {
+            userAnswer = userAnswer.toLowerCase();
+            if ( self.answer )
+                self.answer = self.answer.toLowerCase();
+        }
+        
+        if ( !self.notrim ) {
+            userAnswer = $.trim(userAnswer);
+            self.answer = $.trim(self.answer);
+            if ( self.answer )
+                self.answer = self.answer.toLowerCase();
+        }
+        
+        if ( userAnswer == self.answer || self.validator(userAnswer) ) {
+            self.explanationVisible(true);
+            $('.quiz-answerbox', self.question).each(function() {
+                $(this).addClass('quiz-correct');
+            });
+        } else 
+            $('.quiz-answerbox', self.question).each(function() {
+                $(this).addClass('quiz-wrong');
+            });
+    },
+    
+    hintVisible: function(mode, self) {
+        var self = isundef(self, this);
+        mode = (mode) ? 'block' : 'none';
+        $('.quiz-hint', self.question).each(function() {
+            $(this).css('display', mode);
+        });
+    },
     
     toggleHint: function(self) {
-        self = (self == undefined) ? this : self;
+        var self = isundef(self, this);
         
         $('.quiz-hint', self.question).each(function() {
             if ( $(this).css('display') == 'none' )
-                $(this).css('display', 'block');
+                self.hintVisible(true);
             else
-                $(this).css('display', 'none');
+                self.hintVisible(false);
+        });
+    },
+    
+    clear: function(self) {    
+        var self = isundef(self, this);
+        $('.quiz-answerbox', self.question).val('');
+        self.clearCorrection();
+    },
+    
+    clearCorrection: function(self) {
+        var self = isundef(self, this); 
+        
+        if ( self.question.data('submitted') == true ) {
+            $('.quiz-answerbox', self.question).removeClass('quiz-correct quiz-wrong');
+            self.question.data('submitted', false);
+        }   
+        
+        self.explanationVisible(false);             
+    },
+    
+    showAnswer: function(self) {
+        if ( answer == undefined ) 
+            return;
+    
+        var self = isundef(self, this);
+        self.clear();
+        
+        $('.quiz-answerbox', self.question).each(function() {
+            var $this = $(this);
+            $this.val(self.answer);
+            $this.addClass('quiz-correct');
+        });
+        
+        self.question.data('submitted', true);
+        self.explanationVisible(true);
+    },
+    
+    explanationVisible: function(mode, self) {
+        var self = isundef(self, this);
+        
+        mode = (mode) ? 'block' : 'none';
+        
+        $('.quiz-explanation', self.question).each(function() {
+            $(this).css('display', mode);
         });
     },
     
     init: function() {
         var self = this;
         
+        self.answer = self.question.attr('data-answer');
+        
+        if ( self.question.attr('data-validator') != undefined )
+            self.validator = eval("(" + self.question.attr('data-validator') + ")"); 
+           
+        self.validator = isundef(self.validator, function(x) { return false; });
+            
+        self.caseSensitive = isundef(self.question.attr('data-sensitive'), false);
+        self.notrim = (self.question.attr('data-notrim') != undefined)? true : false; 
+        
+        $('.quiz-clear', self.question).each(function() {
+            $(this).bind('click.clear', function() { self.clear(self) });
+        });
+        
+        $('.quiz-submit', self.question).each(function() {
+            $(this).bind('click.makeCorrection', function() { self.makeCorrection(self) });
+        });
+        
+        $('.quiz-answerbox', self.question).each(function() {
+            $(this).bind('change.clearCorrection', function() { self.clearCorrection(self) });
+        });
+        
+        $('.quiz-show-answer', self.question).each(function() {
+            $(this).bind('click.showAnswer', function() { self.showAnswer(self) });
+        });
+        
         $('.quiz-toggle-hint', self.question).each(function() {
             $(this).bind('click.toggleHint', function() { self.toggleHint(self) });
-        });
+        }); 
 
-        self.toggleHint();
+        self.hintVisible(false);
+        self.explanationVisible(false);
     }
 }
 
@@ -335,7 +469,7 @@ $.quiz.getHandler = function($context) {
 $.quiz.handlers = {
     'quiz-single': QuizSingleHandler,
     'quiz-multiple': QuizMultipleHandler,
-    'quiz-objective': QuizObjectiveHandler
+    'quiz-text': QuizTextHandler
 };
 
 $.quiz.quizzes = [];

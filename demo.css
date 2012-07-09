@@ -44,24 +44,40 @@ code {
     line-height: 1.25em;
 }
 
-.quiz-single, .quiz-multiple, .quiz-objective {
+.quiz-single, .quiz-multiple, .quiz-text {
     background-color: #F0F0F0;
     padding-left: 5px;
     padding-top: 0px;
 }
 
-.quiz-single li, .quiz-multiple li{
+li {
     list-style-type: none;
 }
 
 .quiz-option label {
     padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
-.quiz-correct label, .quiz-wrong label {
-    padding-left: 20px;
-    padding-right: 20px;
-    background-color: #E8E81F;
+input[type="text"].quiz-correct, textarea.quiz-correct {
+    background-color: #50b378;
+    color: white;
+}
+
+input[type="text"].quiz-wrong, textarea.quiz-wrong {
+    background-color: #EB4237;
+    color: white;
+}
+
+.quiz-correct label {
+    background-color: #50b378;
+    color: white;
+}
+
+.quiz-wrong label {
+    background-color: #EB4237;
     color: white;
 }
 
