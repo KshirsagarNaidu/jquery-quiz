@@ -399,8 +399,8 @@ QuizTextHandler.prototype = {
            
         self.validator = isundef(self.validator, function(x) { return false; });
             
-        self.caseSensitive = isundef(self.question.attr('data-sensitive'), false);
-        self.notrim = (self.question.attr('data-notrim') != undefined)? true : false; 
+        self.caseSensitive = self.question.attr('data-sensitive') != undefined;
+        self.notrim = self.question.attr('data-notrim') != undefined; 
         
         $('.quiz-clear', self.question).each(function() {
             $(this).bind('click.clear', function() { self.clear(self) });
