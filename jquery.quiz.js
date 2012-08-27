@@ -150,7 +150,7 @@ QuizMultipleHandler = function (question, idQuestion) {
 
 QuizMultipleHandler.prototype = {
 
-    makeCorrection: function(self) {
+    _individual: function(self) {
         var self = isundef(self, this);
         self.question.data('submitted', true);
         
@@ -165,15 +165,45 @@ QuizMultipleHandler.prototype = {
         });
         
         $('.quiz-checkbox:checked', self.question).each(function() {
-            var $radio = $(this);
-            var $option = $radio.parent();
+            var $checkbox = $(this);
+            var $option = $checkbox.parent();
             
-            if ( isCorrect ) {
+            if ( $option.hasClass('quiz-answer') == $checkbox.is(':checked') )
                 $option.addClass('quiz-correct');
-                self.explanationVisible(true);  
-            } else
+            else
                 $option.addClass('quiz-wrong');
         });
+        
+        if ( isCorrect ) 
+            self.explanationVisible(true);
+    },
+    
+    _whole: function(self) {
+        var self = isundef(self, this);
+        self.question.data('submitted', true);
+        
+        var isCorrect = true;
+
+        $('.quiz-checkbox', self.question).each(function() {
+            var $checkbox = $(this);
+            var $option = $checkbox.parent();
+            
+            isCorrect = isCorrect && 
+                ($option.hasClass('quiz-answer') == $checkbox.is(':checked'));
+        });
+        
+        $('.quiz-checkbox:checked', self.question).each(function() {
+            var $checkbox = $(this);
+            var $option = $checkbox.parent();
+            
+            if ( isCorrect )
+                $option.addClass('quiz-correct');    
+            else
+                $option.addClass('quiz-wrong');
+        });
+        
+        if ( isCorrect ) 
+            self.explanationVisible(true);
     },
     
     clear: function(self) {    
@@ -258,6 +288,12 @@ QuizMultipleHandler.prototype = {
                 label: $this.html() 
             }));
         });
+        
+        if ( self.question.attr('data-individual') != undefined ) {
+            self.makeCorrection = self._individual;
+        } else {
+            self.makeCorrection = self._whole;
+        }
         
         $('.quiz-clear', self.question).each(function() {
             $(this).bind('click.clear', function() { self.clear(self) });
